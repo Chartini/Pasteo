@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Pasteo</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script> 
+<script> 
+function htmlEncode(value){	return $('<pre/>').text(value).html();}
+function htmlDecode(value){	return $('<pre/>').html(value).text();}
+
+var socket = io.connect();
+socket.on('message', function(message) {
+	appendMessage(htmlEncode(message.message));
+});
+
+function sendMessage(message) {
+	var msg = $("#message").val(); 
+	if(msg.length > 0) {
+		socket.json.send({message:msg});
+	}
+	$("#message").val('');
+}
+
+function appendMessage(message) {
+	$('div#chat-box').append('<pre>' + message + '</pre><hr/>'); 
+}
+</script> 
+</head>
+<body>
+<div id="chat-box"></div>
+<form method="post" action="" onsubmit="return false;" />
+	<textarea name="message" id="message" rows="10" cols="80"></textarea>
+	<input type="submit" class="button" name="send" id="send" value="Send" onclick="sendMessage();" />
+</form>
+</body>
+</html>
